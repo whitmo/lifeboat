@@ -1,0 +1,7 @@
+py.test
+pytest-cov
+mock
+coverage
+pytest-capturelog
+
+

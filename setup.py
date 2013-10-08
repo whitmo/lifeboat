@@ -1,20 +1,13 @@
-#!/usr/bin/env python
-
-# Bootstrap installation of Distribute
-import distribute_setup
-distribute_setup.use_setuptools()
-
-import os
-
 from setuptools import setup
+import os
 
 
 PROJECT = u'lifeboat'
 VERSION = '0.1'
-URL = ''
+URL = 'http://lifeboat.github.io'
 AUTHOR = u'whit morriss'
 AUTHOR_EMAIL = u'code@whitmorriss.org'
-DESC = "A short description..."
+DESC = "A three philosophers dine on each other on a raft"
 
 def read_file(file_name):
     file_path = os.path.join(
@@ -34,18 +27,19 @@ setup(
     license=read_file('LICENSE'),
     namespace_packages=[],
     packages=[u'lifeboat'],
-    package_dir = {'': os.path.dirname(__file__)},
+    #package_dir = {'': os.path.dirname(__file__)},
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        # -*- Requirements -*-
+        'ZODB',
+        'fibers',
+        'pyuv',
+        'pyzmq',
+        'evergreen'
     ],
-    entry_points = {
-        # -*- Entry points -*-
-    },
+    entry_points = """
+    """,
     classifiers=[
-    	# see http://pypi.python.org/pypi?:action=list_classifiers
-        # -*- Classifiers -*- 
         "Programming Language :: Python",
     ],
 )
