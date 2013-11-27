@@ -67,7 +67,6 @@ class TestSTM(object):
 
         with atomic as root:
             assert root['wat'].count == 20
-        assert False
 
     def callit(self, name):
         atomic = self.makeone()
