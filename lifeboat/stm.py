@@ -1,9 +1,12 @@
+from .thirdparty import reify
 from ZODB.DB import DB
 from ZODB.MappingStorage import MappingStorage
+from ZODB.POSException import ConflictError
 from evergreen.local import local
+import logging
 import transaction
-from .thirdparty import reify
 
+logger = logging.getLogger(__name__)
 
 class Atomic(object):
     taskstate = local()
@@ -16,22 +19,40 @@ class Atomic(object):
             tsdb = self._dbs[self.name] = self.make_db(self.name)
         return tsdb
 
-    def __init__(self, name='data'):
+    def __init__(self, name='data', attempts=3):
         self.name = name
         self.txn = None
+        self.root = None
+        self.cxn = None
+        self.last_commit_succeeded = None
+        self.attempts = attempts
+
+    def clear(self):
+        self.txn = None
+        self.root = None
+        self.cxn = None
 
     def __enter__(self):
         self.cxn = connection = self.db.open()
         self.root = connection.root()
         self.txn = transaction.begin()
-        #self.txn.join(connection)
         return self.root
 
     def __exit__(self, etype, exc, tb):
         if exc is not None:
             transaction.abort()
+            self.last_commit_succeeded = False
             raise exc
-        transaction.commit()
+
+        try:
+            transaction.commit()
+            self.last_commit_succeeded = True
+            logger.debug('GOOD')
+        except ConflictError:
+            logger.debug('ECONFLICT: %s', transaction.get())
+            self.last_commit_succeeded = False
+
+        self.clear()
 
     @staticmethod
     def make_db(name='STM'):
