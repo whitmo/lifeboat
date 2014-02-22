@@ -7,15 +7,15 @@ VERSION = '0.1'
 URL = 'http://lifeboat.github.io'
 AUTHOR = u'whit morriss'
 AUTHOR_EMAIL = u'code@whitmorriss.org'
-DESC = "A three philosophers dine on each other on a raft"
+DESC = "Three philosophers dine on each other on a raft of snakes"
 
-def read_file(file_name):
-    file_path = os.path.join(
-        os.path.dirname(__file__),
-        file_name
-        )
-    return open(file_path).read()
 
+def read_file(file_name, dir=os.path.dirname(__file__)):
+    file_path = os.path.join(dir, file_name)
+    with open(file_path) as fd:
+        return fd.read()
+
+    
 setup(
     name=PROJECT,
     version=VERSION,
@@ -35,7 +35,9 @@ setup(
         'fibers',
         'pyuv',
         'pyzmq',
-        'evergreen'
+        'evergreen',
+        'more_itertools',
+        'uzmq'
     ],
     entry_points = """
     """,
